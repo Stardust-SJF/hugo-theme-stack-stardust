@@ -27,10 +27,14 @@
             color: var(--card-text-color-main);
             font-size: 1.4rem;
             transition: box-shadow 0.3s ease;
+            transition: transform 0.2s ease-in-out;
 
             &:hover {
                 box-shadow: var(--shadow-l2);
+                transform: translateY(-4px);
             }
+
+            
         }
     }
 }
@@ -61,6 +65,12 @@
 
             span.count {
                 color: var(--card-text-color-tertiary);
+            }
+
+            transition: transform 0.2s ease-in-out; /* 添加过渡效果 */
+
+            &:hover {
+                transform: scale(1.03);
             }
         }
     }

@@ -15,7 +15,12 @@
         margin-bottom: 8px;
         margin-right: 8px;
         border-radius: 16px;
+        transition: transform 0.2s ease-in-out;
       }
+
+      article:hover {
+        transform: scale(1.05);
+    }
     }
   }
   
@@ -47,7 +52,7 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    margin-right: 10px;
+    margin-right: 16px;
 }
 
 .link-card .link-info {
@@ -56,12 +61,13 @@
 
 .link-card h3 {
     margin: 0;
-    font-size: 16px;
+    font-size: 1.6rem;
     color: var(--card-text-color-main);
 }
 
 .link-card p {
-    margin: 5px 0 0;
+    margin: 0.6rem 0 0;
+    font-size: 1.4rem;
     color: var(--card-text-color-secondary);
 }
 
@@ -70,4 +76,23 @@
     .link-card-container {
         grid-template-columns: 1fr; /* 变成一列 */
     }
+}
+
+.article-time-container {
+  display: flex;
+  justify-content: center; /* 居中对齐 */
+  align-items: center;
+  gap: 10px; /* 控制间距 */
+  font-size: 14px; /* 适当调整字体大小 */
+}
+
+.article-time-item {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* 控制图标与文本之间的间距 */
+}
+
+.separator {
+  color: #ccc; /* 分隔符颜色 */
+  font-size: 14px;
 }

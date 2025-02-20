@@ -3,27 +3,9 @@
     <header>
         {{- $taxonomy0 := $.Site.GetPage "taxonomyTerm" "categories" -}}
         {{- $terms0 := $taxonomy0.Pages -}}
-
-        <!-- {{ if not $taxonomy0 }}
-            <p>Debug: Taxonomy 'categories' not found</p>
-        {{ else }}
-            <p>Debug: Found Taxonomy 'categories' with title: {{ $taxonomy0.Title }}</p>
-        {{ end }}
-
-        {{ if not $terms0 }}
-            <p>Debug: No categories found</p>
-        {{ else }}
-            <p>Debug: Found categories:</p>
-            <ul>
-                {{ range $terms0 }}
-                    <li>{{ .Title }} - <a href="{{ .RelPermalink }}">{{ .RelPermalink }}</a></li>
-                {{ end }}
-            </ul>
-        {{ end }} -->
-
         {{ if $terms0 }}
         <h2 class="section-title">{{ $taxonomy0.Title }}</h2>
-        <div class="subsection-list">
+        <div class="subsection-list"}>
             <div class="article-list--tile">
                 {{ range $terms0 }}
                     {{ partial "article-list/tile" (dict "context" . "size" "250x150" "Type" "taxonomy") }}
@@ -32,22 +14,23 @@
         </div>
         {{ end }}
     </header>
-    
-    <header>
-        {{- $taxonomy := $.Site.GetPage "taxonomyTerm" "tags" -}}
-        {{- $terms := $taxonomy.Pages -}}
-        {{ if $terms }}
-        <h2 class="section-title">{{ $taxonomy.Title }}</h2>
-        <div class="subsection-list">
-            <div class="tagCloud-tags">
-                {{ range $terms }}
-                    <!-- {{ partial "article-list/tile" (dict "context" . "size" "250x150" "Type" "taxonomy") }} -->
-                    <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
-                {{ end }}
-            </div>
+
+    <div>
+    {{- $taxonomy := $.Site.GetPage "taxonomyTerm" "tags" -}}
+    {{- $terms := $taxonomy.Pages -}}
+    {{ if $terms }}
+    <h2 class="section-title">{{ $taxonomy.Title }}</h2>
+    <div class="subsection-list">
+        <div class="tagCloud-tags">
+            {{ range $terms }}
+                <!-- {{ partial "article-list/tile" (dict "context" . "size" "250x150" "Type" "taxonomy") }} -->
+                <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
+            {{ end }}
         </div>
-        {{ end }}
-    </header>
+    </div>
+    {{ end }}
+    </div>
+
 
     {{ $pages := where .Site.RegularPages "Type" "in" .Site.Params.mainSections }}
     {{ $notHidden := where .Site.RegularPages "Params.hidden" "!=" true }}

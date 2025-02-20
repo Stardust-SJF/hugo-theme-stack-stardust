@@ -5,6 +5,7 @@
     .left-sidebar {
         order: -3;
         max-width: var(--left-sidebar-max-width);
+        overflow: visible;
     }
 
     .right-sidebar {

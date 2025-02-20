@@ -139,6 +139,7 @@
     margin: 0 calc(var(--container-padding) * -1);
 
     padding: 30px 30px;
+    overflow: visible;
 
     @include respond(xl) {
         padding: 15px 0;
@@ -170,18 +171,19 @@
         position: relative;
         vertical-align: middle;
         padding: 0;
-
+        transition: transform 0.2s ease-in-out;
+    
         @include respond(md) {
             width: 100%;
         }
-
+    
         svg {
             stroke: currentColor;
             stroke-width: 1.33;
             width: 20px;
             height: 20px;
         }
-
+    
         a {
             height: 100%;
             display: inline-flex;
@@ -189,27 +191,37 @@
             color: var(--body-text-color);
             gap: var(--menu-icon-separation);
         }
-
+    
         span {
             flex: 1;
         }
-
+    
         &.current {
             a {
                 color: var(--accent-color);
-                font-weight: bold;
             }
+            transform: scale(1.1); // 修正
         }
-
+    
         &.menu-bottom-section {
             margin-top: auto;
-
+    
             ol {
                 display: flex;
                 padding-left: 0;
             }
         }
+    
+        // 修正 :not() 语法
+        &:not(.current) a {
+            transition: transform 0.2s ease-in-out;
+        }
+    
+        &:not(.current) a:hover {
+            transform: scale(1.1);
+        }
     }
+
 }
 
 .menu-social {
