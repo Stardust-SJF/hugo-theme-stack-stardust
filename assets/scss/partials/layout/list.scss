@@ -48,6 +48,26 @@
 .subsection-list {
     overflow-x: auto;
 
+    .tagCloud-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+
+        a {
+            background: var(--card-background);
+            box-shadow: var(--shadow-l1);
+            border-radius: var(--tag-border-radius);
+            padding: 8px 20px;
+            color: var(--card-text-color-main);
+            font-size: 1.6rem;
+            transition: box-shadow 0.3s ease;
+
+            &:hover {
+                box-shadow: var(--shadow-l2);
+            }
+        }
+    }
+
     .article-list--tile {
         display: flex;
         padding-bottom: 15px;
@@ -55,27 +75,6 @@
         article {
             width: 250px;
             height: 150px;
-            margin-right: 20px;
-            flex-shrink: 0;
-
-            .article-title {
-                margin: 0;
-                font-size: 1.8rem;
-            }
-
-            .article-details {
-                padding: 20px;
-            }
-        }
-    }
-
-    .article-list-tags--tile {
-        display: flex;
-        padding-bottom: 15px;
-
-        article {
-            width: 250px;
-            height: 100px;
             margin-right: 20px;
             flex-shrink: 0;
 
