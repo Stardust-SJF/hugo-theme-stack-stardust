@@ -29,10 +29,11 @@
 .link-card {
     display: flex;
     align-items: center;
-    background: #f8f9fa;
+    background: var(--card-background);
+    border: none;
+    box-shadow: 2px 2px 10px var(--shadow-l2);
     border-radius: 10px;
     padding: 15px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
     text-decoration: none;
     color: inherit;
     transition: transform 0.2s ease-in-out;
@@ -56,12 +57,12 @@
 .link-card h3 {
     margin: 0;
     font-size: 16px;
-    color: #007bff;
+    color: var(--card-text-color-main);
 }
 
 .link-card p {
     margin: 5px 0 0;
-    color: #555;
+    color: var(--card-text-color-secondary);
 }
 
 /* 响应式布局：小屏幕（手机）自动变回一列 */
