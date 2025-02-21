@@ -183,6 +183,69 @@
 
 
 <script>
+  document.addEventListener("DOMContentLoaded", function() {
+    /**
+     * Recursively unwrap empty list items in the given parent list.
+     * For each <li> in the parentList:
+     * - If the <li> is empty (has no visible text when its direct nested list is removed)
+     *   and it has a nested list with deeper TOC items,
+     * - And if none of its sibling <li> elements at that same level have visible text,
+     * then move its nested list items into the immediate parentList (the upper level)
+     * and remove the empty <li>.
+     *
+     * @param {HTMLElement} parentList The <ul> or <ol> containing the <li> items.
+     */
+    function unwrapEmptyListItems(parentList) {
+      // Get a static list of <li> children of parentList.
+      const items = Array.from(parentList.children).filter(child => child.tagName.toLowerCase() === 'li');
+      
+      items.forEach(li => {
+        // Create a clone of the li and remove any direct nested list to inspect visible text.
+        const liClone = li.cloneNode(true);
+        const nestedListClone = liClone.querySelector(':scope > ul, :scope > ol');
+        if (nestedListClone) nestedListClone.remove();
+        
+        // If li is empty and has a nested list in the actual DOM...
+        if (liClone.textContent.trim().length === 0) {
+          // Check sibling condition: if any sibling is non-empty, do not unwrap.
+          const siblings = Array.from(parentList.children).filter(child => child.tagName.toLowerCase() === 'li');
+          const hasNonEmptySibling = siblings.some(sibling => {
+            if (sibling === li) return false;
+            const siblingClone = sibling.cloneNode(true);
+            const siblingNested = siblingClone.querySelector(':scope > ul, :scope > ol');
+            if (siblingNested) siblingNested.remove();
+            return siblingClone.textContent.trim().length > 0;
+          });
+          if (hasNonEmptySibling) return;
+          
+          // Get the actual nested list from the DOM.
+          const actualNestedList = li.querySelector(':scope > ul, :scope > ol');
+          if (actualNestedList && actualNestedList.children.length > 0) {
+            // Process the nested list recursively first.
+            unwrapEmptyListItems(actualNestedList);
+            // Insert each item from the nested list into the immediate parentList
+            // (i.e. the upper level relative to the empty li).
+            while (actualNestedList.firstChild) {
+              parentList.insertBefore(actualNestedList.firstChild, li);
+            }
+            // Remove the now-empty li.
+            parentList.removeChild(li);
+          }
+        }
+      });
+    }
+
+    // Locate the TOC's top-level list.
+    const tocNav = document.querySelector('.widget--toc > nav#TableOfContents');
+    if (tocNav) {
+      const topList = tocNav.querySelector('ol, ul');
+      if (topList) {
+        unwrapEmptyListItems(topList);
+      }
+    }
+  });
+
+
   /**
    * Determine if an <li> has no visible text/anchor outside its nested list.
    * That means the <li> is effectively "empty" except for deeper children.
