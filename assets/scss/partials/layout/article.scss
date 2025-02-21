@@ -167,7 +167,7 @@
                 $n: 9 + $i * 35;
                 margin-left: calc(-#{$n}px - 1em);
                 padding-left: calc(#{$n}px + 1em - var(--heading-border-size));
-                display: block;
+                display: inline-block;
             }
         }
     }

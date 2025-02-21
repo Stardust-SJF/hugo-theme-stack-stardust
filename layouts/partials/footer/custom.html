@@ -133,5 +133,212 @@
 </script>
 
 
+<style>
+  /* Always show the top-level TOC list */
+  #TableOfContents > ul,
+  #TableOfContents > ol {
+    display: block;
+  }
+  /* Use max-height and opacity for smooth transitions on deeper levels */
+  #TableOfContents ul ul,
+  #TableOfContents ol ol {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  }
+  /* When a nested list is open, set a large enough max-height and full opacity */
+  #TableOfContents ul ul.open,
+  #TableOfContents ol ol.open {
+    max-height: 1000px; /* Adjust this value as needed */
+    opacity: 1;
+  }
+
+  /* --- Styling the TOC items and toggle buttons --- */
+  .widget--toc li {
+    margin: 0.25em 0;
+  }
+  .widget--toc button.toc-toggle {
+    display: inline-block;
+    margin-left: 0.5em;
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    vertical-align: sub;
+  }
+  .toc-toggle-icon {
+    width: 1em;
+    height: 1em;
+    transition: transform 0.2s ease-in-out;
+  }
+  .toc-toggle.expanded .toc-toggle-icon {
+    transform: rotate(-90deg);
+  }
+  .toc-toggle:hover .toc-toggle-icon {
+    filter: brightness(1.4);
+    transition: filter 0.2s ease-in-out;
+  }
+</style>
+
+
+<script>
+  /**
+   * Determine if an <li> has no visible text/anchor outside its nested list.
+   * That means the <li> is effectively "empty" except for deeper children.
+   */
+  function isLiEmptyExceptForSublist(li) {
+    const liClone = li.cloneNode(true);
+    // Remove the first nested <ul> or <ol> (if present) to check text content.
+    const childSublist = liClone.querySelector(':scope > ul, :scope > ol');
+    if (childSublist) childSublist.remove();
+    // Check leftover text
+    return liClone.textContent.trim().length === 0;
+  }
+
+  /**
+   * Recursively expand any "empty" <li> (i.e., placeholder headings) within `root`.
+   * If an <li> is empty but has deeper <li> elements, we add the 'open' class so it’s visible.
+   */
+  function autoExpandEmptyLevels(root) {
+    root.querySelectorAll('li').forEach((li) => {
+      const sublist = li.querySelector(':scope > ul, :scope > ol');
+      if (!sublist) return;
+      if (isLiEmptyExceptForSublist(li) && sublist.querySelectorAll('li').length > 0) {
+        sublist.classList.add('open');
+        autoExpandEmptyLevels(sublist);
+      }
+    });
+  }
+
+  /**
+   * Update toggle buttons after expansions so their arrow directions match the current state.
+   */
+  function updateTocToggleButtons() {
+    document.querySelectorAll('.widget--toc li').forEach((li) => {
+      const toggleBtn = li.querySelector('button.toc-toggle');
+      if (!toggleBtn) return; // No toggle for empty headings
+      const sublist = li.querySelector(':scope > ul, :scope > ol');
+      if (!sublist) return;
+      // If sublist is open, mark the button "expanded" so the arrow rotates
+      if (sublist.classList.contains('open')) {
+        toggleBtn.classList.add('expanded');
+      } else {
+        toggleBtn.classList.remove('expanded');
+      }
+    });
+  }
+
+  /**
+   * Initial pass:
+   * - For each <li> that has a non-empty sublist:
+   *    - If <li> is "empty," auto-expand it (no toggle button).
+   *    - Otherwise, add a toggle button (inline with the text) that shows an arrow.
+   */
+  document.querySelectorAll('.widget--toc li').forEach((li) => {
+    const sublist = li.querySelector(':scope > ul, :scope > ol');
+    if (!sublist || sublist.querySelectorAll('li').length === 0) return;
+
+    const emptyLi = isLiEmptyExceptForSublist(li);
+
+    if (emptyLi) {
+      // Auto-expand empty headings so deeper levels are visible
+      sublist.classList.add('open');
+      autoExpandEmptyLevels(sublist);
+    } else {
+      // Add a manual toggle button with a right-arrow SVG
+      const toggleBtn = document.createElement('button');
+      toggleBtn.classList.add('toc-toggle');
+      
+      // Inline SVG arrow (initially pointing right)
+      toggleBtn.innerHTML = `
+        <svg class="toc-toggle-icon" viewBox="0 0 11 11">
+          <path d="M8 1 L2 5 L8 9 z" fill="var(--accent-color)" />
+        </svg>
+      `;
+
+      // If the sublist is initially open (e.g., from an earlier pass), show it rotated
+      if (sublist.classList.contains('open')) {
+        toggleBtn.classList.add('expanded');
+      }
+
+      // On click, toggle manual-open and open
+      toggleBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        if (sublist.classList.contains('manual-open')) {
+          sublist.classList.remove('manual-open', 'open');
+          toggleBtn.classList.remove('expanded');
+        } else {
+          sublist.classList.add('manual-open', 'open');
+          toggleBtn.classList.add('expanded');
+          // Also auto-expand any empty headings within
+          autoExpandEmptyLevels(sublist);
+        }
+      });
+
+      // Insert the button AFTER the item text but BEFORE any nested <ul>/<ol>.
+      // Typically, the item text is an <a> or text node, then the sublist is next.
+      // So we can insert the button just before the sublist.
+      li.insertBefore(toggleBtn, sublist);
+    }
+  });
+
+  /**
+   * Auto-expand/collapse on scroll.
+   * - Collapses any non-manual sections
+   * - Expands the "active" item (and ancestors)
+   * - Auto-expands any empty levels within newly opened sections
+   * - Updates toggle button arrows
+   */
+  function initTocHide() {
+    const toc = document.querySelector(".widget--toc");
+    if (!toc) return;
+
+    window.addEventListener('scroll', () => {
+      // Collapse any auto-opened sections that aren’t manually toggled
+      document.querySelectorAll("#TableOfContents ul ul.open, #TableOfContents ol ol.open")
+        .forEach((ul) => {
+          if (!ul.classList.contains('manual-open')) {
+            ul.classList.remove('open');
+          }
+        });
+
+      // Reveal the active TOC item (marked with 'active-class')
+      const currentLi = document.querySelector(".active-class");
+      if (!currentLi) return;
+
+      // Auto-expand the direct sublist if it’s not manually toggled
+      const subList = currentLi.querySelector(':scope > ul, :scope > ol');
+      if (subList && subList.querySelectorAll('li').length > 0 && !subList.classList.contains('manual-open')) {
+        subList.classList.add('open');
+        autoExpandEmptyLevels(subList);
+      }
+
+      // Walk up the tree, expanding all parent lists (unless manually toggled)
+      let parent = currentLi.parentElement;
+      while (parent && (parent.tagName.toLowerCase() === 'ul' || parent.tagName.toLowerCase() === 'ol')) {
+        if (!parent.classList.contains('manual-open')) {
+          parent.classList.add('open');
+          autoExpandEmptyLevels(parent);
+        }
+        parent = parent.parentElement.closest('ul, ol');
+      }
+
+      // Update toggle arrows to match newly opened/closed lists
+      updateTocToggleButtons();
+    });
+  }
+
+  initTocHide();
+</script>
+
+
+
+
+
+
+
+
 
 
