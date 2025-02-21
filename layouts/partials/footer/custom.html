@@ -514,10 +514,105 @@ function initCodeMoreBox() {
 initCodeMoreBox();
 </script>
 
+<div id="background-light", class="background">
+  <script src={{ (resources.Get "background/sakura.js").Permalink }}></script>
+</div>
 
 
 
 
+<div id="background-dark", class="background">
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+  <div class="firefly"></div>
+</div>
+
+<style>
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1; /* 让它保持在最底层，不挡住页面内容 */
+  background-color: none;/* 你可以更改背景颜色 */
+}
+
+#canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1; /* 让它保持在最底层，不挡住页面内容 */
+  background-color: none;/* 你可以更改背景颜色 */
+}
+</style>
+
+<!-- another particle background -->
+<!-- <script src={{ (resources.Get "background/sparticles.min.js").Permalink}}></script> -->
+<!-- <script>
+  window.onload = function() {
+    let myElement = document.getElementById("background");
+    let mySparticles = new Sparticles(myElement, { count: 100 }, 3840, 2160);
+  }
+</script> -->
+
+<!-- another firefly canvas background-->
+<!-- <canvas id="canvas"></canvas>
+<script src={{ (resources.Get "background/firefly.js").Permalink}}></script> -->
+
+<script>
+// 定义你的 toggleDarkMode 函数
+function toggleDarkMode(isDark) {
+  if (isDark) {
+    // document.getElementById("background-light").style.display = "none";
+    stopp();
+    document.getElementById("background-dark").style.display = "block";
+  } else {
+    // document.getElementById("background-light").style.display = "block";
+    startSakura();
+    document.getElementById("background-dark").style.display = "none";
+  }
+}
+
+// 监听自定义事件，当颜色方案发生变化时触发
+window.addEventListener('onColorSchemeChange', (event) => {
+  const colorScheme = event.detail;
+  // 根据颜色方案调用 toggleDarkMode
+  toggleDarkMode(colorScheme === 'dark');
+});
+
+// 例如：在页面加载时，根据当前 data-scheme 的值进行初始化
+document.addEventListener("DOMContentLoaded", () => {
+  const currentScheme = document.documentElement.dataset.scheme;
+  toggleDarkMode(currentScheme === 'dark');
+});
+
+</script>
 
 
 
