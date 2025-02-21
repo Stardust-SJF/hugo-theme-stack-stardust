@@ -1,7 +1,7 @@
 {{ $image := partialCached "helper/image" (dict "Context" .context "Type" .Type) .context.RelPermalink .Type }}
 <article class="{{ if $image.exists }}has-image{{ end }}">
     <a href="{{ .context.RelPermalink }}">
-        
+
         {{ if $image.exists }}
             <div class="article-image">
                 {{ if $image.resource }}
@@ -17,23 +17,35 @@
                         {{- $Height = $thumbnail.Height -}}
                     {{- end -}}
                     
-                    <img src="{{ $Permalink }}" 
-                        width="{{ $Width }}" 
-                        height="{{ $Height }}" 
-                        loading="lazy"
-                        alt="Featured image of post {{ .context.Title }}"
-                        {{ with .context.Slug }}data-key="{{ . }}" {{ end }}
-                        data-hash="{{ $imageRaw.Data.Integrity }}">
+                    <img src="{{ $Permalink }}"
+                         width="{{ $Width }}"
+                         height="{{ $Height }}"
+                         loading="lazy"
+                         alt="Featured image of {{ .context.Title }}"
+                         {{ with .context.Slug }}data-key="{{ . }}" {{ end }}
+                         data-hash="{{ $imageRaw.Data.Integrity }}">
                 {{ else }}
-                    <img src="{{ $image.permalink }}" loading="lazy" data-key="{{ .context.Slug }}" data-hash="{{ $image.permalink }}"/>
+                    <img src="{{ $image.permalink }}"
+                         loading="lazy"
+                         data-key="{{ .context.Slug }}"
+                         data-hash="{{ $image.permalink }}"/>
                 {{ end }}
             </div>
         {{ end }}
 
         <div class="article-details">
-            <h2 class="article-title">
-                {{- .context.Title -}}
-            </h2>
+            <table style="width: 100%;">
+                <tr>
+                    <td class="article-title" style="text-align: left;">{{- .context.Title -}}</td>
+                    {{- if eq .Type "taxonomy" }}
+                    <td class="article-title" style="text-align: right; {{ if $image.exists }}color: #fff;{{ else }}color: var(--card-text-color-main);{{ end }}">
+                        {{ .context.Pages | len }}
+                    </td>
+                    {{- end }}
+                </tr>
+            </table>
         </div>
+                      
     </a>
 </article>
+

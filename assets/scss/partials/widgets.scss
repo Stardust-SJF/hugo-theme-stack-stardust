@@ -82,4 +82,40 @@
     }
 }
 
+/* Category widget */
+.category {
+    .category-label {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+
+        a {
+            border-left: 6px solid; // Set border for category widget
+            background: var(--card-background);
+            box-shadow: var(--shadow-l1);
+
+            width: 170px;
+            border-left: 6px solid;
+            padding: 14px 29px 14px 35px;
+            color: var(--card-text-color-main);
+
+            font-size: 1.5rem;
+            border-radius: var(--tag-border-radius);
+            padding: 8px 20px;
+            color: var(--card-text-color-main);
+            transition: transform 0.2s ease-in-out;
+
+            &:hover {
+                transform: translateY(-4px);
+                box-shadow: var(--shadow-l2);
+            }
+        }
+    }
+    .category-count {
+        margin-left: 7px;
+        color: var(--body-text-color);
+    }
+}
+
+
 
