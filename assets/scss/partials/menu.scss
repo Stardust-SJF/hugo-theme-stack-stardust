@@ -199,6 +199,7 @@
         &.current {
             a {
                 color: var(--accent-color);
+                font-weight: bold;
             }
             transform: scale(1.1); // 修正
         }
