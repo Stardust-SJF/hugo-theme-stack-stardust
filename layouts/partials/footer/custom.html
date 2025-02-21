@@ -146,12 +146,14 @@
     opacity: 0;
     overflow: visible;
     transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    display: none;
   }
   /* When a nested list is open, set a large enough max-height and full opacity */
   #TableOfContents ul ul.open,
   #TableOfContents ol ol.open {
     max-height: 1000px; /* Adjust this value as needed */
     opacity: 1;
+    display: block;
   }
 
   /* --- Styling the TOC items and toggle buttons --- */
@@ -166,6 +168,7 @@
     cursor: pointer;
     outline: none;
     vertical-align: sub;
+    margin-bottom: -11px;
   }
   .toc-toggle-icon {
     width: 1em;
