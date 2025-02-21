@@ -144,16 +144,18 @@
   #TableOfContents ol ol {
     max-height: 0;
     opacity: 0;
-    overflow: visible;
+    overflow: hidden;
     transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
-    display: none;
+    /* display: none; */
   }
+
   /* When a nested list is open, set a large enough max-height and full opacity */
   #TableOfContents ul ul.open,
   #TableOfContents ol ol.open {
     max-height: 1000px; /* Adjust this value as needed */
     opacity: 1;
     display: block;
+    overflow: visible;
   }
 
   /* --- Styling the TOC items and toggle buttons --- */

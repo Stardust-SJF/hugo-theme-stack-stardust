@@ -129,12 +129,12 @@
 
             & > ol,
             & > ul {
-                margin-top: 10px;
+                margin-top: 0px;
                 padding-left: 10px;
-                margin-bottom: -5px;
+                margin-bottom: 0px;
 
                 & > li:last-child {
-                    margin-bottom: 0;
+                    margin-bottom: -5px;
                 }
             }
         }
