@@ -80,6 +80,7 @@
 
 .article-time-container {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center; /* 居中对齐 */
   align-items: center;
   gap: 10px; /* 控制间距 */
