@@ -514,14 +514,16 @@ function initCodeMoreBox() {
 initCodeMoreBox();
 </script>
 
-<div id="background-light", class="background">
+<!-- 动态背景相关 -->
+
+<div id="background-light", class="background", style = "display: none;">
   <script src={{ (resources.Get "background/sakura.js").Permalink }}></script>
 </div>
 
 
 
 
-<div id="background-dark", class="background">
+<div id="background-dark", class="background", style = "display: none;">
   <div class="firefly"></div>
   <div class="firefly"></div>
   <div class="firefly"></div>
@@ -589,13 +591,13 @@ initCodeMoreBox();
 // 定义你的 toggleDarkMode 函数
 function toggleDarkMode(isDark) {
   if (isDark) {
-    // document.getElementById("background-light").style.display = "none";
-    stopp();
+    document.getElementById("background-light").style.display = "none";
+    // stopp();
     document.getElementById("background-dark").style.display = "block";
   } else {
-    // document.getElementById("background-light").style.display = "block";
+    document.getElementById("background-light").style.display = "block";
     document.getElementById("background-dark").style.display = "none";
-    startSakura();
+    // startSakura();
   }
 }
 
@@ -611,6 +613,79 @@ document.addEventListener("DOMContentLoaded", () => {
   const currentScheme = document.documentElement.dataset.scheme;
   toggleDarkMode(currentScheme === 'dark');
 });
+
+</script>
+
+
+<!-- PJAX -->
+{{ with resources.Get "js/topbar.min.js" }}
+<!-- 引入本地JS脚本 -->
+<script src={{ .Permalink }}></script>
+{{ end }}
+<script src={{ (resources.Get "pjax.min.js" ).Permalink }}></script>
+<script>
+  var pjax = new Pjax({
+    selectors: [
+      "title",
+      ".main-container",
+      ".js-Pjax"
+    ]
+  })
+
+  pjax._handleResponse = pjax.handleResponse;
+  pjax.handleResponse = function (responseText, request, href, options) {
+    if (request.responseText.match("<html")) {
+      let newDoc = new DOMParser().parseFromString(responseText, 'text/html');
+
+      let bodyClass = newDoc.body.className;
+      document.body.setAttribute("class", bodyClass)
+
+      pjax._handleResponse(responseText, request, href, options);
+    } else {
+      window.open(href)
+      topbar.hide();
+    }
+  }
+
+
+  topbar.config({
+    barColors: {
+      '0': 'rgba(255,  255, 255, 1)',
+      '1.0': 'rgba(0, 149, 234,  1)'
+    }
+  })
+
+
+  document.addEventListener('pjax:send', () => {
+    topbar.show();
+  })
+
+
+  document.addEventListener('pjax:complete', () => {
+    // reload scripts to make sure they can be properly loaded
+    window.Stack.init();
+    
+    topbar.hide();
+
+    initTocHide();
+
+    initScrollTop();
+
+    initCodeMoreBox();
+
+    // toc related
+    const tocNav = document.querySelector('.widget--toc > nav#TableOfContents');
+    if (tocNav) {
+      const topList = tocNav.querySelector('ol, ul');
+      if (topList) {
+        unwrapEmptyListItems(topList);
+      }
+    }
+
+    document.querySelectorAll('.widget--toc li').forEach((li) => {
+
+    // showWelcomeMessage();
+  })
 
 </script>
 
