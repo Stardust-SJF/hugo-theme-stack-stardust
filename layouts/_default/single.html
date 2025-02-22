@@ -44,3 +44,7 @@
 {{ define "right-sidebar" }}
     {{ if .Scratch.Get "hasWidget" }}{{ partial "sidebar/right.html" (dict "Context" . "Scope" "page") }}{{ end}}
 {{ end }}
+
+<p style="color: gray; border-bottom: dashed 1px gray;width: fit-content;margin-bottom: 1rem;">
+    ✏️本文最後更新於 {{$.Lastmod}}{{ with .GitInfo }}：{{ .Subject }}({{ .AbbreviatedHash }}){{ end }}
+</p>
