@@ -189,7 +189,18 @@
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    /**
+
+    // Locate the TOC's top-level list.
+    const tocNav = document.querySelector('.widget--toc > nav#TableOfContents');
+    if (tocNav) {
+      const topList = tocNav.querySelector('ol, ul');
+      if (topList) {
+        unwrapEmptyListItems(topList);
+      }
+    }
+  });
+
+  /**
      * Recursively unwrap empty list items in the given parent list.
      * For each <li> in the parentList:
      * - If the <li> is empty (has no visible text when its direct nested list is removed)
@@ -200,7 +211,7 @@
      *
      * @param {HTMLElement} parentList The <ul> or <ol> containing the <li> items.
      */
-    function unwrapEmptyListItems(parentList) {
+     function unwrapEmptyListItems(parentList) {
       // Get a static list of <li> children of parentList.
       const items = Array.from(parentList.children).filter(child => child.tagName.toLowerCase() === 'li');
       
@@ -239,16 +250,6 @@
         }
       });
     }
-
-    // Locate the TOC's top-level list.
-    const tocNav = document.querySelector('.widget--toc > nav#TableOfContents');
-    if (tocNav) {
-      const topList = tocNav.querySelector('ol, ul');
-      if (topList) {
-        unwrapEmptyListItems(topList);
-      }
-    }
-  });
 
 
   /**
@@ -667,28 +668,156 @@ document.addEventListener("DOMContentLoaded", () => {
     
     topbar.hide();
 
-    initTocHide();
+    // initTocHide();
 
     initScrollTop();
 
     initCodeMoreBox();
 
     // toc related
+
     const tocNav = document.querySelector('.widget--toc > nav#TableOfContents');
     if (tocNav) {
-      const topList = tocNav.querySelector('ol, ul');
-      if (topList) {
-        unwrapEmptyListItems(topList);
+    const topList = tocNav.querySelector('ol, ul');
+    if (topList) {
+      unwrapEmptyListItems(topList);
+      topList.querySelectorAll('li').forEach((li) => {
+        const sublist = li.querySelector(':scope > ul, :scope > ol');
+        if (!sublist || sublist.querySelectorAll('li').length === 0) return;
+
+        const emptyLi = isLiEmptyExceptForSublist(li);
+
+        if (emptyLi) {
+          sublist.classList.add('open');
+          autoExpandEmptyLevels(sublist);
+        } else {
+          const toggleBtn = document.createElement('button');
+          toggleBtn.classList.add('toc-toggle');
+          toggleBtn.innerHTML = `
+            <svg class="toc-toggle-icon" viewBox="0 0 11 11">
+              <path d="M8 1 L2 5 L8 9 z" fill="var(--accent-color)" />
+            </svg>
+          `;
+
+          if (sublist.classList.contains('open')) {
+            toggleBtn.classList.add('expanded');
+          }
+
+          toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            if (sublist.classList.contains('manual-open')) {
+              sublist.classList.remove('manual-open', 'open');
+              toggleBtn.classList.remove('expanded');
+            } else {
+              sublist.classList.add('manual-open', 'open');
+              toggleBtn.classList.add('expanded');
+              autoExpandEmptyLevels(sublist);
+            }
+          });
+
+          li.insertBefore(toggleBtn, sublist);
+        }
+      });
       }
     }
 
-    document.querySelectorAll('.widget--toc li').forEach((li) => {
+    // 初始化 TOC 监听滚动，确保交互生效
+    initTocHide();
 
     // showWelcomeMessage();
+    
   })
 
 </script>
 
+
+<!-- comments -->
+
+<script>
+  window.giscusParams = {
+    repo: "{{ .Site.Params.comments.giscus.repo }}",
+    repoID: "{{ .Site.Params.comments.giscus.repoID }}",
+    category: "{{ .Site.Params.comments.giscus.category }}",
+    categoryID: "{{ .Site.Params.comments.giscus.categoryID }}",
+    mapping: "{{ default "title" .Site.Params.comments.giscus.mapping }}",
+    strict: "{{ default 0 .Site.Params.comments.giscus.strict }}",
+    reactionsEnabled: "{{ default 1 .Site.Params.comments.giscus.reactionsEnabled }}",
+    emitMetadata: "{{ default 0 .Site.Params.comments.giscus.emitMetadata }}",
+    inputPosition: "{{ default "top" .Site.Params.comments.giscus.inputPosition }}",
+    theme: "{{ default "light" .Site.Params.comments.giscus.lightTheme }}",
+    lang: "{{ default "en" .Site.Params.comments.giscus.lang }}",
+    loading: "{{ .Site.Params.comments.giscus.loading }}"
+  };
+</script>
+
+
+<div class="js-Pjax"><script>
+  (function() {
+      let comment = document.querySelector("#comment")
+      if (comment) {
+          addCommentScript(comment)
+      }
+  })(document)
+
+  
+    function addCommentScript(comment) {
+    let script = document.createElement('script');
+    script.src = 'https://giscus.app/client.js';
+    script.crossOrigin = 'anonymous';
+    script.setAttribute('data-repo', window.giscusParams.repo);
+    script.setAttribute('data-repo-id', window.giscusParams.repoID);
+    script.setAttribute('data-category', window.giscusParams.category);
+    script.setAttribute('data-category-id', window.giscusParams.categoryID);
+    script.setAttribute('data-mapping', window.giscusParams.mapping);
+    script.setAttribute('data-strict', window.giscusParams.strict);
+    script.setAttribute('data-reactions-enabled', window.giscusParams.reactionsEnabled);
+    script.setAttribute('data-emit-metadata', window.giscusParams.emitMetadata);
+    script.setAttribute('data-input-position', window.giscusParams.inputPosition);
+    script.setAttribute('data-theme', window.giscusParams.theme);
+    script.setAttribute('data-lang', window.giscusParams.lang);
+    script.setAttribute('data-loading', window.giscusParams.loading);
+    script.async = true;
+    comment.appendChild(script);
+    initGiscus();
+  }
+
+
+  function initGiscus() {
+      addEventListener("message", (e) => {
+          if (event.origin !== "https://giscus.app") return;
+          handler();
+      });
+      window.addEventListener("onColorSchemeChange", handler);
+
+      function handler() {
+          if (document.documentElement.dataset.scheme === "light") {
+              setGiscusTheme('light');
+          } else {
+              setGiscusTheme('dark_dimmed');
+          }
+      }
+  };
+</script></div>
+
+<!-- busuanzi script reload  -->
+<script>
+  document.addEventListener('pjax:complete', () => {
+  // Remove the existing busuanzi script if present
+  const existingScript = document.querySelector('script[src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"]');
+  if (existingScript) {
+    existingScript.remove();
+  }
+
+  // Create a new script element for busuanzi
+  const busuanziScript = document.createElement('script');
+  busuanziScript.src = '//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js';
+  busuanziScript.async = true;
+
+  // Append the new script to the body (or any appropriate container)
+  document.body.appendChild(busuanziScript);
+});
+</script>
 
 
 

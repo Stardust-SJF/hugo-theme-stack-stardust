@@ -1,4 +1,5 @@
 {{- with .Site.Params.comments.giscus -}}
+<div id="comment">
 <script
     src="https://giscus.app/client.js"
     data-repo="{{- .repo -}}"
@@ -49,4 +50,5 @@
         }
     })();
 </script>
+</div>
 {{- end -}}
