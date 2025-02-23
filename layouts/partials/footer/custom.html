@@ -801,6 +801,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script></div>
 
 <!-- busuanzi script reload  -->
+{{- if .Site.Params.busuanzi.enable -}}
 <script>
   document.addEventListener('pjax:complete', () => {
   // Remove the existing busuanzi script if present
@@ -818,6 +819,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.body.appendChild(busuanziScript);
 });
 </script>
+{{- end -}}
 
 
 
