@@ -144,7 +144,7 @@
         }
 
         ul li.active-class > a {
-            display: block;
+            display: inline-block;
         }
 
         @function repeat($str, $n) {
