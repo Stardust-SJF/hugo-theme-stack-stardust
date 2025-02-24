@@ -439,6 +439,10 @@
       transform: rotate(180deg);
   }
 
+  .code-more-box.expanded {
+      background-image: none;
+  }
+
   .code-more-img {
       cursor: pointer !important;
       display: block;
@@ -481,6 +485,7 @@ function initCodeMoreBox() {
         codeBlock.style.maxHeight = "400px";
         codeBlock.setAttribute('data-expanded', 'false');
         codeMoreBtn.classList.remove('rotated');
+        codeMoreBox.classList.remove('expanded');
       } else {
         // Expand the code block
         // Measure full content height (scrollHeight gives the full height even when collapsed)
@@ -488,6 +493,7 @@ function initCodeMoreBox() {
         codeBlock.style.maxHeight = fullHeight + "px";
         codeBlock.setAttribute('data-expanded', 'true');
         codeMoreBtn.classList.add('rotated');
+        codeMoreBox.classList.add('expanded');
         // Once the transition ends, remove the inline style to allow for dynamic height
         codeBlock.addEventListener('transitionend', function handler(e) {
           if (e.propertyName === 'max-height') {
