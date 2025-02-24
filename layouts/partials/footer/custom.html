@@ -431,16 +431,13 @@
       border-top-right-radius: 8px;
       padding-top: 0;
       cursor: pointer;
-      transition: transform 0.3s ease;
   }
 
   /* Rotate the button when expanded */
-  .code-more-btn.rotated {
-      transform: rotate(180deg);
-  }
 
   .code-more-box.expanded {
       background-image: none;
+      padding-top: 0px;
   }
 
   .code-more-img {
@@ -450,7 +447,12 @@
       width: 22px;
       height: 16px;
       background-color: var(--body-text-color);
+      transition: transform 0.3s ease;
       mask-image: url({{ (resources.Get "icons/codeMore.svg").Permalink }});
+  }
+
+  .code-more-img.rotated {
+      transform: rotate(180deg);
   }
 </style>
 
@@ -484,15 +486,15 @@ function initCodeMoreBox() {
         // Animate to collapsed height
         codeBlock.style.maxHeight = "400px";
         codeBlock.setAttribute('data-expanded', 'false');
-        codeMoreBtn.classList.remove('rotated');
         codeMoreBox.classList.remove('expanded');
+        img.classList.remove('rotated');
       } else {
         // Expand the code block
         // Measure full content height (scrollHeight gives the full height even when collapsed)
         let fullHeight = codeBlock.scrollHeight;
         codeBlock.style.maxHeight = fullHeight + "px";
         codeBlock.setAttribute('data-expanded', 'true');
-        codeMoreBtn.classList.add('rotated');
+        img.classList.add('rotated');
         codeMoreBox.classList.add('expanded');
         // Once the transition ends, remove the inline style to allow for dynamic height
         codeBlock.addEventListener('transitionend', function handler(e) {
