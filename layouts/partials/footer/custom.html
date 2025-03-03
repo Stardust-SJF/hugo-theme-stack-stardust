@@ -734,8 +734,15 @@ document.addEventListener("DOMContentLoaded", () => {
     initTocHide();
 
     // showWelcomeMessage();
+
+    // checkbox相关
+    document.querySelectorAll('.main-article input[type="checkbox"]').forEach(cb => {
+      cb.disabled = false;
+      cb.style.pointerEvents = 'none';
+    });
     
   })
+
 
 </script>
 
@@ -841,4 +848,10 @@ document.addEventListener("DOMContentLoaded", () => {
    
 </style>
 
-zFontSansSerif:
+<!-- change checkbox style (color) -->
+<script>
+document.querySelectorAll('.main-article input[type="checkbox"]').forEach(cb => {
+    cb.disabled = false;  
+    cb.style.pointerEvents = 'none';
+});
+</script>
