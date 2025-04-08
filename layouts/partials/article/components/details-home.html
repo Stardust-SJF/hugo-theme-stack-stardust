@@ -91,13 +91,14 @@
     </footer>
     {{ end }}
     
+    {{ with .Params.description }}
     <div class="article-title-wrapper">
-        {{ with .Params.description }}
         <h3 class="article-subtitle">
             {{ . }}
         </h3>
-        {{ end }}
     </div>
+    {{ end }}
+    
 
     {{ if .Params.categories }}
     <header class="article-category">

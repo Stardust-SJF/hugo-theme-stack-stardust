@@ -107,14 +107,14 @@
     </footer>
     {{ end }}
         
-    <div class = "article-title-wrapper">
-        {{ with .Params.description }}
+    {{ with .Params.description }}
+    <div class="article-title-wrapper">
         <h3 class="article-subtitle">
             {{ . }}
         </h3>
-        {{ end }}
     </div>
-
+    {{ end }}
+    
     {{ if .Params.categories }}
     <header class="article-category">
         {{ range (.GetTerms "categories") }}
