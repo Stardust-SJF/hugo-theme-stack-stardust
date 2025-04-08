@@ -6,24 +6,7 @@
                 {{- .Title -}}
             </a>
         </h2>
-    
-        {{ with .Params.description }}
-        <h3 class="article-subtitle">
-            {{ . }}
-        </h3>
-        {{ end }}
     </div>
-
-    {{ if .Params.categories }}
-    <header class="article-category">
-        {{ range (.GetTerms "categories") }}
-            <a href="{{ .RelPermalink }}" {{ with .Params.style }}style="background-color: {{ .background }}; color: {{ .color }};"{{ end }}>
-                {{ .LinkTitle }}
-            </a>
-        {{ end }}
-        {{ partial "article/components/tags" . }}
-    </header>
-    {{ end }}
 
     {{ $showReadingTime := .Params.readingTime | default (.Site.Params.article.readingTime) }}
     {{ $showDate := not .Date.IsZero }}
@@ -123,6 +106,27 @@
         </div>
     </footer>
     {{ end }}
+        
+    <div class = "article-title-wrapper">
+        {{ with .Params.description }}
+        <h3 class="article-subtitle">
+            {{ . }}
+        </h3>
+        {{ end }}
+    </div>
+
+    {{ if .Params.categories }}
+    <header class="article-category">
+        {{ range (.GetTerms "categories") }}
+            <a href="{{ .RelPermalink }}" {{ with .Params.style }}style="background-color: {{ .background }}; color: {{ .color }};"{{ end }}>
+                {{ .LinkTitle }}
+            </a>
+        {{ end }}
+        {{ partial "article/components/tags" . }}
+    </header>
+    {{ end }}
+
+
 
     {{ if .IsTranslated }}
         <footer class="article-translations">
